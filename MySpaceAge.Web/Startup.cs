@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using MySpaceAge.Web.Services;
+using MySpaceAge.Web.Stores;
+using NodaTime;
 
 namespace MySpaceAge.Web
 {
@@ -15,6 +18,10 @@ namespace MySpaceAge.Web
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<PlanetStore>();
+            services.AddTransient<AgeService>();
+            services.AddSingleton<IClock>(SystemClock.Instance);
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -25,10 +32,10 @@ namespace MySpaceAge.Web
                 app.UseDeveloperExceptionPage();
             }
 
-            app.Run(async (context) =>
-            {
-                await context.Response.WriteAsync("Hello World!");
-            });
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+
+            app.UseMvcWithDefaultRoute();
         }
     }
 }
